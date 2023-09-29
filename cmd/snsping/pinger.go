@@ -23,7 +23,7 @@ func pinger(app *application) {
 			countErrors++
 		}
 		if app.conf.debug {
-			log.Printf("%s: sucess=%d error=%d: sleeping for %v",
+			log.Printf("%s: success=%d error=%d: sleeping for %v",
 				me, countOk, countErrors, app.conf.interval)
 		}
 		time.Sleep(app.conf.interval)

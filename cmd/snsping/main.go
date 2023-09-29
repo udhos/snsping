@@ -13,7 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
-const version = "0.0.0"
+const version = "0.1.0"
 
 type application struct {
 	me           string
