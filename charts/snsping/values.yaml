@@ -1,0 +1,89 @@
+# Default values for snsping.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: udhos/snsping
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# redeploy:
+#
+# 'always': adds a random annotation to Deployment in
+#           order to redeploy the pods whenever the chart is reapplied.
+#
+# 'reconfig': adds annotations with checksums of configurations in
+#             order to redeploy the pods whenever configuration is changed.
+#
+# https://v3.helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
+#
+redeploy: always
+
+podAnnotations:
+  "sidecar.istio.io/inject": "true"
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# add custom labels to deployment pods
+customLabels:
+  app: snsping
+
+resources:
+  requests:
+    cpu: 300m
+    memory: 100Mi
+    ephemeral-storage: 100Mi
+  limits:
+    cpu: 2000m
+    memory: 300Mi
+    ephemeral-storage: 200Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podHealthCheck:
+  port: 8888
+  path: /health
+
+#
+# See: https://stackoverflow.com/questions/72816925/helm-templating-in-configmap-for-values-yaml
+#
+configMapProperties:
+  # Required:
+  TOPIC_ARN: arn:aws:sns:us-east-1:100010001000:topicname
+  #
+  # Optional:
+  #SECRET_ROLE_ARN: ""
+  #INTERVAL: 10s
+  #HEALTH_ADDR: :8888
+  #HEALTH_PATH: /health
+  #TOPIC_ROLE_ARN: arn:aws:iam::100010001000:role/publisher
+  #DEBUG: "true"
