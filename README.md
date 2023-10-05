@@ -24,7 +24,7 @@ export DEBUG=true
 export TOPIC_ROLE_ARN=arn:aws:iam::100010001000:role/publisher
 
 # mandatory
-export TOPIC_ARN=arn:aws:sns:us-east-1:100010001000:topicname
+export TOPIC_ARN=["arn:aws:sns:us-east-1:100010001000:topicname"]
 
 snsping
 ```

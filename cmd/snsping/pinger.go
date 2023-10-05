@@ -7,37 +7,55 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
+	"gopkg.in/yaml.v3"
 )
 
 func pinger(app *application) {
 	const me = "pinger"
 
-	var countOk int
-	var countErrors int
+	var topics []string
+
+	if errYaml := yaml.Unmarshal([]byte(app.conf.topicArn), &topics); errYaml != nil {
+		log.Fatalf("%s: parse yaml topics: %v", me, errYaml)
+	}
+
+	size := len(topics)
+
+	if size < 1 {
+		log.Fatalf("%s: bad number of topics: %d", me, size)
+	}
+
+	countOk := make([]int, size)
+	countErrors := make([]int, size)
 
 	for {
-		errPub := publish(app)
-		if errPub == nil {
-			countOk++
-		} else {
-			countErrors++
+		for i, t := range topics {
+			if errPub := publish(app, t); errPub == nil {
+				countOk[i]++
+			} else {
+				countErrors[i]++
+			}
+			if app.conf.debug {
+				log.Printf("%s: %s: success=%d error=%d",
+					me, t, countOk[i], countErrors[i])
+			}
 		}
 		if app.conf.debug {
-			log.Printf("%s: success=%d error=%d: sleeping for %v",
-				me, countOk, countErrors, app.conf.interval)
+			log.Printf("%s: sleeping for %v",
+				me, app.conf.interval)
 		}
 		time.Sleep(app.conf.interval)
 	}
 }
 
-func publish(app *application) error {
+func publish(app *application, topicArn string) error {
 	const me = "publish"
 
 	message := "sns-ping"
 
 	input := &sns.PublishInput{
 		Message:  aws.String(message),
-		TopicArn: aws.String(app.conf.topicArn),
+		TopicArn: aws.String(topicArn),
 	}
 
 	_, errPub := app.snsClient.Publish(context.TODO(), input)

@@ -78,7 +78,7 @@ podHealthCheck:
 #
 configMapProperties:
   # Required:
-  TOPIC_ARN: arn:aws:sns:us-east-1:100010001000:topicname
+  TOPIC_ARN: '["arn:aws:sns:us-east-1:100010001000:topicname"]'
   #
   # Optional:
   #SECRET_ROLE_ARN: ""
