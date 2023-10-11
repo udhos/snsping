@@ -1,4 +1,5 @@
-package main
+// Package snsclient creates sns client.
+package snsclient
 
 import (
 	"fmt"
@@ -9,8 +10,9 @@ import (
 	"github.com/udhos/boilerplate/awsconfig"
 )
 
-func newSnsClientAws(sessionName, topicArn, roleArn, endpointURL string) *sns.Client {
-	const me = "snsClient"
+// NewSnsClient creates an SNS client.
+func NewSnsClient(sessionName, topicArn, roleArn, endpointURL string) *sns.Client {
+	const me = "NewSnsClient"
 
 	topicRegion, errTopic := getTopicRegion(topicArn)
 	if errTopic != nil {

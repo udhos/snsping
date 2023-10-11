@@ -11,6 +11,7 @@ import (
 	"runtime"
 
 	"github.com/aws/aws-sdk-go-v2/service/sns"
+	"github.com/udhos/snsping/snsclient"
 )
 
 const version = "0.1.0"
@@ -57,7 +58,7 @@ func main() {
 		conf: getConfig(me),
 	}
 
-	app.snsClient = newSnsClientAws(me, app.conf.topicArn, app.conf.topicRoleArn, app.conf.endpointURL)
+	app.snsClient = snsclient.NewSnsClient(me, app.conf.topicArn, app.conf.topicRoleArn, app.conf.endpointURL)
 
 	//
 	// start health server
