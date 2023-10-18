@@ -26,7 +26,7 @@ type config struct {
 	wg          sync.WaitGroup
 }
 
-const version = "0.0.0"
+const version = "1.0.0"
 
 const batch = 10
 
