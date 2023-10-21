@@ -7,6 +7,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
+	"github.com/aws/aws-sdk-go-v2/service/sns/types"
+	"github.com/udhos/opentelemetry-trace-sqs/otelsns"
 	"gopkg.in/yaml.v3"
 )
 
@@ -51,12 +53,18 @@ func pinger(app *application) {
 func publish(app *application, topicArn string) error {
 	const me = "publish"
 
-	message := "sns-ping"
+	ctx, span := app.tracer.Start(context.TODO(), me)
+	defer span.End()
+
+	message := "snsping"
 
 	input := &sns.PublishInput{
-		Message:  aws.String(message),
-		TopicArn: aws.String(topicArn),
+		Message:           aws.String(message),
+		TopicArn:          aws.String(topicArn),
+		MessageAttributes: make(map[string]types.MessageAttributeValue),
 	}
+
+	otelsns.NewCarrier().Inject(ctx, input.MessageAttributes)
 
 	_, errPub := app.snsClient.Publish(context.TODO(), input)
 	if errPub != nil {
