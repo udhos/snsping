@@ -28,6 +28,6 @@ func getConfig(roleSessionName string) config {
 		topicArn:     env.String("TOPIC_ARN", ""),
 		topicRoleArn: env.String("TOPIC_ROLE_ARN", ""),
 		debug:        env.Bool("DEBUG", false),
-		attributes:   env.Int("ATTRIBUTES", 0),
+		attributes:   env.Int("ATTRIBUTES", 1),
 	}
 }
