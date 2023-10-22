@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -62,6 +63,14 @@ func publish(app *application, topicArn string) error {
 		Message:           aws.String(message),
 		TopicArn:          aws.String(topicArn),
 		MessageAttributes: make(map[string]types.MessageAttributeValue),
+	}
+
+	for i := 0; i < app.conf.attributes; i++ {
+		str := fmt.Sprintf("%d", i)
+		input.MessageAttributes[str] = types.MessageAttributeValue{
+			StringValue: aws.String(str),
+			DataType:    aws.String("String"),
+		}
 	}
 
 	otelsns.NewCarrier().Inject(ctx, input.MessageAttributes)

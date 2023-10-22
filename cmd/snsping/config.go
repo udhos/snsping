@@ -14,6 +14,7 @@ type config struct {
 	topicArn     string
 	topicRoleArn string
 	debug        bool
+	attributes   int
 }
 
 func getConfig(roleSessionName string) config {
@@ -27,5 +28,6 @@ func getConfig(roleSessionName string) config {
 		topicArn:     env.String("TOPIC_ARN", ""),
 		topicRoleArn: env.String("TOPIC_ROLE_ARN", ""),
 		debug:        env.Bool("DEBUG", false),
+		attributes:   env.Int("ATTRIBUTES", 0),
 	}
 }
