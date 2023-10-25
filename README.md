@@ -26,6 +26,11 @@ export TOPIC_ROLE_ARN=arn:aws:iam::100010001000:role/publisher
 # mandatory
 export TOPIC_ARN=["arn:aws:sns:us-east-1:100010001000:topicname"]
 
+export OTELCONFIG_EXPORTER=jaeger
+export OTEL_TRACES_EXPORTER=jaeger
+export OTEL_PROPAGATORS=b3multi
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger-collector:14268
+
 snsping
 ```
 
