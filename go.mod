@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sns v1.22.0
 	github.com/udhos/boilerplate v1.2.0
 	github.com/udhos/opentelemetry-trace-sqs v1.1.0
-	github.com/udhos/otelconfig v0.0.2
+	github.com/udhos/otelconfig v0.1.0
 	go.opentelemetry.io/otel/trace v1.19.0
 	gopkg.in/yaml.v3 v3.0.1
 )

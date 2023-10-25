@@ -29,7 +29,7 @@ type config struct {
 	wg          sync.WaitGroup
 }
 
-const version = "1.1.0"
+const version = "1.1.1"
 
 const batch = 10
 
@@ -67,9 +67,13 @@ func main() {
 	var tracer trace.Tracer
 
 	{
-		const debug = true
+		options := oteltrace.TraceOptions{
+			DefaultService:     me,
+			NoopTracerProvider: false,
+			Debug:              true,
+		}
 
-		tracer, cancel, errTracer := oteltrace.TraceStart(me, debug)
+		tracer, cancel, errTracer := oteltrace.TraceStart(options)
 
 		if errTracer != nil {
 			log.Fatalf("tracer: %v", errTracer)

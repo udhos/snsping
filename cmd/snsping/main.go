@@ -16,7 +16,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-const version = "1.2.0"
+const version = "1.2.1"
 
 type application struct {
 	me           string
@@ -72,9 +72,13 @@ func main() {
 	//
 
 	{
-		const debug = true
+		options := oteltrace.TraceOptions{
+			DefaultService:     me,
+			NoopTracerProvider: false,
+			Debug:              true,
+		}
 
-		tracer, cancel, errTracer := oteltrace.TraceStart(me, debug)
+		tracer, cancel, errTracer := oteltrace.TraceStart(options)
 
 		if errTracer != nil {
 			log.Fatalf("tracer: %v", errTracer)
