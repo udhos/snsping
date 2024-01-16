@@ -10,6 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 	"github.com/aws/aws-sdk-go-v2/service/sns/types"
 	"github.com/udhos/opentelemetry-trace-sqs/otelsns"
+	"github.com/udhos/snsping/internal/snsclient"
+	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/yaml.v3"
 )
 
@@ -31,9 +33,20 @@ func pinger(app *application) {
 	countOk := make([]int, size)
 	countErrors := make([]int, size)
 
+	clientPerRegion := map[string]*sns.Client{}
+
 	for {
 		for i, t := range topics {
-			if errPub := publish(app, t); errPub == nil {
+			region, errRegion := snsclient.GetTopicRegion(t)
+			if errRegion != nil {
+				log.Fatalf("%s: region error: %v", me, errRegion)
+			}
+			client := clientPerRegion[region]
+			if client == nil {
+				client = snsclient.NewSnsClient(me, app.conf.topicArn, app.conf.topicRoleArn, app.conf.endpointURL)
+				clientPerRegion[region] = client
+			}
+			if errPub := publish(client, t, app.tracer, app.conf.attributes); errPub == nil {
 				countOk[i]++
 			} else {
 				countErrors[i]++
@@ -51,10 +64,10 @@ func pinger(app *application) {
 	}
 }
 
-func publish(app *application, topicArn string) error {
+func publish(client *sns.Client, topicArn string, tracer trace.Tracer, attributes int) error {
 	const me = "publish"
 
-	ctx, span := app.tracer.Start(context.TODO(), me)
+	ctx, span := tracer.Start(context.TODO(), me)
 	defer span.End()
 
 	message := "snsping"
@@ -65,7 +78,7 @@ func publish(app *application, topicArn string) error {
 		MessageAttributes: make(map[string]types.MessageAttributeValue),
 	}
 
-	for i := 0; i < app.conf.attributes; i++ {
+	for i := 0; i < attributes; i++ {
 		str := fmt.Sprintf("%d", i)
 		input.MessageAttributes[str] = types.MessageAttributeValue{
 			StringValue: aws.String(str),
@@ -75,7 +88,7 @@ func publish(app *application, topicArn string) error {
 
 	otelsns.NewCarrier().Inject(ctx, input.MessageAttributes)
 
-	_, errPub := app.snsClient.Publish(context.TODO(), input)
+	_, errPub := client.Publish(context.TODO(), input)
 	if errPub != nil {
 		log.Printf("%s: error: %v",
 			me, errPub)

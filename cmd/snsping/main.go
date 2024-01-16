@@ -10,19 +10,16 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/aws/aws-sdk-go-v2/service/sns"
 	"github.com/udhos/otelconfig/oteltrace"
-	"github.com/udhos/snsping/internal/snsclient"
 	"go.opentelemetry.io/otel/trace"
 )
 
-const version = "1.2.2"
+const version = "1.2.3"
 
 type application struct {
 	me           string
 	conf         config
 	serverHealth *http.Server
-	snsClient    *sns.Client
 	tracer       trace.Tracer
 }
 
@@ -64,8 +61,6 @@ func main() {
 		me:   me,
 		conf: getConfig(me),
 	}
-
-	app.snsClient = snsclient.NewSnsClient(me, app.conf.topicArn, app.conf.topicRoleArn, app.conf.endpointURL)
 
 	//
 	// initialize tracing

@@ -14,7 +14,7 @@ import (
 func NewSnsClient(sessionName, topicArn, roleArn, endpointURL string) *sns.Client {
 	const me = "NewSnsClient"
 
-	topicRegion, errTopic := getTopicRegion(topicArn)
+	topicRegion, errTopic := GetTopicRegion(topicArn)
 	if errTopic != nil {
 		log.Fatalf("%s: topic region error: %v", me, errTopic)
 	}
@@ -34,14 +34,15 @@ func NewSnsClient(sessionName, topicArn, roleArn, endpointURL string) *sns.Clien
 	return sns.NewFromConfig(awsConf.AwsConfig)
 }
 
+// GetTopicRegion extracts region from SNS topic ARN.
 // arn:aws:sns:us-east-1:123456789012:mytopic
-func getTopicRegion(topicArn string) (string, error) {
+func GetTopicRegion(topicArn string) (string, error) {
 	const me = "getTopicRegion"
 	fields := strings.SplitN(topicArn, ":", 5)
 	if len(fields) < 5 {
 		return "", fmt.Errorf("%s: bad topic arn=[%s]", me, topicArn)
 	}
 	region := fields[3]
-	log.Printf("%s: topicRegion=[%s]", me, region)
+	//log.Printf("%s: topicRegion=[%s]", me, region)
 	return region, nil
 }
