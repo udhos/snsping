@@ -2,6 +2,18 @@ apiVersion: v1
 entries:
   snsping:
   - apiVersion: v2
+    appVersion: 1.2.4
+    created: "2024-02-04T02:28:01.236813302-03:00"
+    description: Install snsping helm chart into kubernetes.
+    digest: 34b7a30bc508805bf81158d8bed21ccc38f6776fab96e0351ccdf3df5547fe24
+    name: snsping
+    sources:
+    - https://github.com/udhos/snsping
+    type: application
+    urls:
+    - https://udhos.github.io/snsping/snsping-1.2.4.tgz
+    version: 1.2.4
+  - apiVersion: v2
     appVersion: 1.2.3
     created: "2024-01-16T00:45:01.846420051-03:00"
     description: Install snsping helm chart into kubernetes.
@@ -97,4 +109,4 @@ entries:
     urls:
     - https://udhos.github.io/snsping/snsping-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-16T00:45:01.845795165-03:00"
+generated: "2024-02-04T02:28:01.236439849-03:00"
