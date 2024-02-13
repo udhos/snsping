@@ -8,24 +8,19 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 
+	"github.com/udhos/boilerplate/boilerplate"
 	"github.com/udhos/otelconfig/oteltrace"
 	"go.opentelemetry.io/otel/trace"
 )
 
-const version = "1.2.4"
+const version = "1.2.5"
 
 type application struct {
 	me           string
 	conf         config
 	serverHealth *http.Server
 	tracer       trace.Tracer
-}
-
-func longVersion(me string) string {
-	return fmt.Sprintf("%s runtime=%s GOOS=%s GOARCH=%s GOMAXPROCS=%d",
-		me, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.GOMAXPROCS(0))
 }
 
 func main() {
@@ -45,7 +40,7 @@ func main() {
 	me := filepath.Base(os.Args[0])
 
 	{
-		v := longVersion(me + " version=" + version)
+		v := boilerplate.LongVersion(me + " version=" + version)
 		if showVersion {
 			fmt.Println(v)
 			return
@@ -95,12 +90,14 @@ func main() {
 			Handler: mux,
 		}
 
-		mux.HandleFunc(app.conf.healthPath, func(w http.ResponseWriter, r *http.Request) {
+		mux.HandleFunc(app.conf.healthPath, func(w http.ResponseWriter,
+			_ /*r*/ *http.Request) {
 			http.Error(w, "health ok", 200)
 		})
 
 		go func() {
-			log.Printf("health server: listening on %s %s", app.conf.healthAddr, app.conf.healthPath)
+			log.Printf("health server: listening on %s %s",
+				app.conf.healthAddr, app.conf.healthPath)
 			err := app.serverHealth.ListenAndServe()
 			log.Fatalf("health server: exited: %v", err)
 		}()
