@@ -1,6 +1,6 @@
 # STEP 1 build executable binary
 
-FROM golang:1.22.3-alpine3.19 as builder
+FROM golang:1.23.2-alpine3.20 AS builder
 
 RUN apk update
 RUN apk add git
@@ -21,7 +21,7 @@ RUN go build -o /tmp/snsping github.com/udhos/snsping/cmd/snsping
 #
 # curl: https://security.alpinelinux.org/srcpkg/curl
 #
-FROM alpine:3.19.1
+FROM alpine:3.20.3
 COPY --from=builder /tmp/snsping /bin/snsping
 #RUN apk add curl=8.1.2-r0 libcrypto3=3.1.0-r4 libssl3=3.1.0-r4
 RUN apk update
