@@ -14,7 +14,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-const version = "1.2.7"
+const version = "1.2.8"
 
 type application struct {
 	me           string
